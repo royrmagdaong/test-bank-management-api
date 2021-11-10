@@ -1,0 +1,21 @@
+# sign in user
+POST http://localhost:3000/user/signin
+content-type: application/json
+
+{
+    "email": "admin@gmail.com",
+    "password": "password"
+}
+
+###
+# get all user
+POST  http://localhost:3000/user/
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxOGI5Y2Y0NjkzYmI5MTA3NGI1OGUyMyIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNjM2NTQyNjEzLCJleHAiOjE2MzY2MjkwMTN9.LS7aTc_MVE5LCreL_APPtxMrlYtqXT-35F6VETSVA6k
+
+{
+    "searchString": "",
+    "admin": true,
+    "professor": true,
+    "student": true
+}
