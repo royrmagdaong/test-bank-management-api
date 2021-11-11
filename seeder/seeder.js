@@ -97,7 +97,7 @@ const admin = [
 
 const student = [
     {
-        student_id: '202100001',
+        student_id: '20210000',
         first_name: 'Angelo',
         middle_name: 'Manalansan',
         last_name: 'Tagugib',
@@ -107,6 +107,30 @@ const student = [
         course: 'BSIT',
         section: 'B',
         year_level: '1st'
+    },
+    {
+        student_id: '20210000',
+        first_name: 'Alejandro',
+        middle_name: 'Cruz',
+        last_name: 'Perez',
+        birth_day: "01-01-1993",
+        gender: 'M',
+        email: 'alejandro@gmail.com',
+        course: 'BSIT',
+        section: 'A',
+        year_level: '2nd'
+    },
+    {
+        student_id: '20210000',
+        first_name: 'Peterson',
+        middle_name: 'Pelaez',
+        last_name: 'Morte',
+        birth_day: "03-22-1996",
+        gender: 'M',
+        email: 'peterson@gmail.com',
+        course: 'BSOA',
+        section: 'C',
+        year_level: '4th'
     }
 ]
 
@@ -216,7 +240,8 @@ const populateUserStudent = async (roles, hashPassword) => {
             if(newUser){
                 let stdt = await new Student({
                     user_id: newUser._id,
-                    student_id: student[i].student_id,
+                    index: i+1,
+                    student_id: `${student[i].student_id}${i}`,
                     email: student[i].email,
                     gender: student[i].gender,
                     first_name: student[i].first_name,

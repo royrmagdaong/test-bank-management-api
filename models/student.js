@@ -6,6 +6,10 @@ const studentSchema = Schema({
         type: Schema.Types.ObjectId, 
         ref: 'User'
     },
+    index: {
+        type: Number,
+        required: true
+    },
     student_id: {
         type: String,
         default: null

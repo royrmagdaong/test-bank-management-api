@@ -1,0 +1,5 @@
+# sign in user
+POST http://localhost:3000/student/
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxOGI5Y2Y0NjkzYmI5MTA3NGI1OGUyMyIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNjM2NjMzMTUyLCJleHAiOjE2MzY3MTk1NTJ9.bGakIV2xFQZZHj3crT4wf97kOQdpcmdi-TQAhZKz91o
+
