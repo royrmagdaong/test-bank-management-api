@@ -3,6 +3,10 @@ const Schema = mongoose.Schema
 
 const userSchema = Schema({
     role: { type: String, required: true },
+    account_name: {
+        type: String,
+        required: true
+    },
     email:{
         type: String,
         required: true

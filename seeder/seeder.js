@@ -230,6 +230,7 @@ const populateUserStudent = async (roles, hashPassword) => {
     for(let i = 0; i<student.length;i++){
         let user = await new User({
             role: roles.STUDENT,
+            account_name: student[i].first_name + ' ' + student[i].last_name,
             email: student[i].email,
             password: hashPassword,
             verificationCode: generateCode(),
@@ -271,6 +272,7 @@ const populateUserAdmin = async (roles, hashPassword) => {
     for(let i = 0; i<admin.length;i++){
         let user = await new User({
             role: roles.ADMIN,
+            account_name: admin[i].first_name + ' ' + admin[i].last_name,
             email: admin[i].email,
             password: hashPassword,
             verificationCode: generateCode(),
@@ -307,6 +309,7 @@ const populateUserProfessor = async (roles, hashPassword) => {
     for(let i = 0; i<professor.length;i++){
         let user = await new User({
             role: roles.PROFESSOR,
+            account_name: professor[i].first_name + ' ' + professor[i].last_name,
             email: professor[i].email,
             password: hashPassword,
             verificationCode: generateCode(),

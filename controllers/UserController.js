@@ -8,23 +8,21 @@ module.exports = {
     // get all user
     getAllUser: async (req, res) => {
         try {
-            let regexp = new RegExp("^"+ req.body.searchString, 'i')
-            let admin = req.body.admin ? 'admin': null
-            let professor = req.body.professor ? 'professor': null
-            let student = req.body.student ? 'student': null
-            let users
-            
-            users = await User.find({ 
-                $and: [
-                    { email: regexp },
-                    { deleted_at: null },
-                    { role: { $in: [admin, professor, student] } }
-                ]
-            })
+            let limit = req.body.limit
+            let search = req.body.searchString
+            let regexp = new RegExp("^"+ search, 'i')
 
-            res.json({ response: true, data: users })
+            await User.find({
+                $and: [
+                    { $or: [{account_name: regexp}, {email: regexp}, {role: regexp}] },
+                    { deleted_at: null }
+                ]
+            }).limit(limit).exec((error, foundUsers)=>{
+                if(error) res.status(500).json({ response: false, message: error.message })
+                return res.json({ response: true, data: foundUsers })
+            })
         } catch (error) {
-            res.status(500).json({ response: false, message: error.message })
+            return res.status(500).json({ response: false, message: error.message })
         }
     },
     // sign in user
