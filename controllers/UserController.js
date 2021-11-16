@@ -9,18 +9,31 @@ module.exports = {
     getAllUser: async (req, res) => {
         try {
             let limit = req.body.limit
+            let skip = req.body.skip
             let search = req.body.searchString
             let regexp = new RegExp("^"+ search, 'i')
 
-            await User.find({
-                $and: [
-                    { $or: [{account_name: regexp}, {email: regexp}, {role: regexp}] },
-                    { deleted_at: null }
-                ]
-            }).limit(limit).exec((error, foundUsers)=>{
-                if(error) res.status(500).json({ response: false, message: error.message })
-                return res.json({ response: true, data: foundUsers })
+            const count = await User.countDocuments({ $or: [{account_name: regexp}, {email: regexp}, {role: regexp}] });
+
+            await User.aggregate([
+                { $match: { $or: [{account_name: regexp}, {email: regexp}, {role: regexp}] } },
+                { $limit: limit + skip },
+                { $skip: skip }
+            ]).exec((error, users) => {
+                if(error) return res.status(500).json({ response: false, message: error.message })
+                if(users){
+                    return res.status(200).json({ 
+                        response: true,
+                        data: users,
+                        count: count,
+                        limit: limit,
+                        skip: skip
+                    })
+                }else{
+                    return res.status(404).json({ response: false, message: 'no data' })
+                }
             })
+            
         } catch (error) {
             return res.status(500).json({ response: false, message: error.message })
         }
