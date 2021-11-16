@@ -75,4 +75,32 @@ module.exports = {
             return res.json({ message: "User doesn't exist.", reponse: false })
         }
     },
+    createUser: async (req, res) => {
+        try {
+            let account_name = req.body.account_name
+            let email = req.body.email
+            let role = req.body.role
+            let password = req.body.password
+
+            if(role==='Administrator') role = 'admin'
+            if(role==='Instructor') role = 'professor'
+            if(role==='Student') role = 'student'
+
+            await bcrypt.hash(password, 10, async (error, hashPassword) => {
+                if(error) return res.status(500).json({response: false, message:error.message})
+                let user = await new User({
+                    role: role,
+                    account_name: account_name,
+                    email: email,
+                    password: hashPassword
+                })
+                await user.save((error, newUser)=>{
+                    if(error) return res.status(500).json({response: false, message:error.message})
+                    return res.status(201).json({response: true, message: `${email} is created successfully!`})
+                })
+            })
+        } catch (error) {
+            return res.status(500).json({response: false, message:error.message})
+        }
+    }
 }

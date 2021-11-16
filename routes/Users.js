@@ -16,5 +16,9 @@ router.post('/',
 router.post('/signin', 
     UserController.signInUser
 )
+// create user
+router.post('/create', 
+    UserController.createUser
+)
 
 module.exports = router
