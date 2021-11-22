@@ -5,7 +5,6 @@ const Role = require('../models/role');
 const generateCode = require('../middlewares/generateCode')
 const User = require('../models/user')
 const Admin = require('../models/admin')
-const Department = require('../models/department')
 const Student = require('../models/student')
 const Professor = require('../models/professor')
 const Subject = require('../models/subject')
@@ -41,7 +40,6 @@ seeder.connect(process.env.DATABASE_URL, { useUnifiedTopology: true, useNewUrlPa
                         './models/admin',
                         './models/student',
                         './models/professor',
-                        './models/department',
                         './models/subject',
                         './models/course'
                     ])
@@ -52,7 +50,6 @@ seeder.connect(process.env.DATABASE_URL, { useUnifiedTopology: true, useNewUrlPa
                         'Admin',
                         'Student',
                         'Professor',
-                        'Department',
                         'Subject',
                         'Course'
                     ], async ()=> {
@@ -65,9 +62,6 @@ seeder.connect(process.env.DATABASE_URL, { useUnifiedTopology: true, useNewUrlPa
                         
                         // populate user and student
                         await populateUserStudent(roles, hashPassword)
-
-                        // populate department
-                        await populateDepartment()
                         
                         // populate course
                         await populateCourse()
@@ -97,7 +91,7 @@ const admin = [
 
 const student = [
     {
-        student_id: '20210000',
+        student_id: '202100000',
         first_name: 'Angelo',
         middle_name: 'Manalansan',
         last_name: 'Tagugib',
@@ -109,7 +103,7 @@ const student = [
         year_level: '1st'
     },
     {
-        student_id: '20210000',
+        student_id: '202100000',
         first_name: 'Alejandro',
         middle_name: 'Cruz',
         last_name: 'Perez',
@@ -121,7 +115,7 @@ const student = [
         year_level: '2nd'
     },
     {
-        student_id: '20210000',
+        student_id: '202100000',
         first_name: 'Peterson',
         middle_name: 'Pelaez',
         last_name: 'Morte',
@@ -136,7 +130,8 @@ const student = [
 
 const professor = [
     {
-        id_number: '2021P001',
+        id_number: '2100000',
+        index: 1,
         department: '',
         email: 'professor1@gmail.com',
         first_name: 'Professor 1',
@@ -144,44 +139,6 @@ const professor = [
         last_name: 'Prof1',
         birth_day: "01-01-1991",
         gender: 'M'
-    }
-]
-
-const department = [
-    {
-        department_name: "Library",
-        officer_in_charge: "Lesley Manalac",
-        email: "library@ptc.com"
-    },
-    {
-        department_name: "Registrar",
-        officer_in_charge: "Alice Meli",
-        email: "registrar@ptc.com"
-    },
-    {
-        department_name: "Accounting",
-        officer_in_charge: "Josephine Alexa",
-        email: "accounting@ptc.com"
-    },
-    {
-        department_name: "Guidance",
-        officer_in_charge: "Peterson Canry",
-        email: "guidance@ptc.com"
-    },
-    {
-        department_name: "Student Affairs",
-        officer_in_charge: "Judith Minoza",
-        email: "studentaffairs@ptc.com"
-    },
-    {
-        department_name: "Head Department (BSIT,CCS,CHS)",
-        officer_in_charge: "James Smith",
-        email: "ithead@ptc.com"
-    },
-    {
-        department_name: "Department Head (BSOA,COA,CHRM)",
-        officer_in_charge: "Meliza Qorazon",
-        email: "oahead@ptc.com"
     }
 ]
 
@@ -251,7 +208,9 @@ const populateUserStudent = async (roles, hashPassword) => {
                     birth_day: student[i].birth_day,
                     course: student[i].course,
                     section: student[i].section,
-                    year_level: student[i].year_level
+                    year_level: student[i].year_level,
+                    academic_year: '2020-2021',
+                    status: 'New Student'
                 })
                 await stdt.save(async (err, newStudent) =>{
                     if(err){ return console.log('failed to create user student.') }
@@ -320,6 +279,7 @@ const populateUserProfessor = async (roles, hashPassword) => {
             if(newUser){
                 let prof = await new Professor({
                     user_id: newUser._id,
+                    index: professor[i].index,
                     id_number: professor[i].id_number,
                     department: professor[i].department,
                     email: professor[i].email,
@@ -339,25 +299,6 @@ const populateUserProfessor = async (roles, hashPassword) => {
                 })
             }else{
                 return console.log('failed to create user professor.') 
-            }
-        })
-    }
-}
-
-const populateDepartment = async () => {
-    for(let i = 0; i<department.length;i++){
-        let dept = await new Department({
-            department_name: department[i].department_name,
-            officer_in_charge: department[i].officer_in_charge,
-            email: department[i].email
-        })
-
-        await dept.save(async (err, newDept) =>{
-            if(err){ return console.log('failed to create department.') }
-            if(newDept){
-                console.log(newDept.department_name + ' department created.')
-            }else{
-                return console.log('failed to create department.') 
             }
         })
     }

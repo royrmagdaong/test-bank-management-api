@@ -10,6 +10,10 @@ const professorSchema = Schema({
         type: String,
         required: true
     },
+    index: {
+        type: Number,
+        required: true
+    },
     department: {
         type: String,
         default: null
@@ -35,6 +39,18 @@ const professorSchema = Schema({
         default: null
     },
     gender:{
+        type: String,
+        default: null
+    },
+    address:{
+        type: String,
+        default: null
+    },
+    civil_status:{
+        type: String,
+        default: null
+    },
+    specialization:{
         type: String,
         default: null
     },
