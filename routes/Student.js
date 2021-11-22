@@ -13,4 +13,11 @@ router.post('/',
     StudentController.getStudents
 )
 
+// create student
+router.post('/create', 
+    authenticate, 
+    authRole(['admin']), 
+    StudentController.createStudent
+)
+
 module.exports = router

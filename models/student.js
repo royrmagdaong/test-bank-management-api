@@ -12,19 +12,19 @@ const studentSchema = Schema({
     },
     student_id: {
         type: String,
-        default: null
+        required: true
     },
     first_name:{
         type: String,
-        default: null
+        required: true
     },
     middle_name:{
         type: String,
-        default: null
+        required: true
     },
     last_name:{
         type: String,
-        default: null
+        required: true
     },
     birth_day:{
         type: Date,
@@ -32,11 +32,11 @@ const studentSchema = Schema({
     },
     gender:{
         type: String,
-        required: true
+        default: null
     },
     email:{
         type: String,
-        required: true
+        default: null
     },
     course:{
         type: String,
@@ -44,11 +44,19 @@ const studentSchema = Schema({
     },
     section:{
         type: String,
-        default: null
+        required: true
     },
     year_level:{
         type: String,
-        default: null
+        required: true
+    },
+    status:{
+        type: String,
+        required: true
+    },
+    academic_year:{
+        type: String,
+        required: true
     },
     created_at:{
         type: Date,

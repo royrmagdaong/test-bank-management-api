@@ -49,5 +49,40 @@ module.exports = {
         } catch (error) {
             return res.json({response: false, message: error.message})
         }
+    },
+    createStudent: async (req, res) => {
+      try {
+        let student_id
+        let first_name = req.body.first_name
+        let middle_name = req.body.middle_name
+        let last_name = req.body.last_name
+        let status = req.body.status
+        let year_level = req.body.year_level
+        let section = req.body.section
+        let academic_year = req.body.academic_year
+        let index
+
+        await Student.findOne({},{},{sort:{created_at: -1}}, async (error, lastRecord) => {
+          if(error) return res.status(500).json({response: false, message: error.message})
+          index = lastRecord.index+1
+          student_id = parseInt(lastRecord.student_id)+1
+          await new Student({
+            index: index,
+            student_id: student_id,
+            first_name: first_name,
+            middle_name: middle_name,
+            last_name: last_name,
+            section: section,
+            year_level: year_level,
+            status: status,
+            academic_year: academic_year
+          }).save(async (error, newStudent)=>{
+            if(error) return res.status(500).json({response: false, message: error.message})
+            return res.status(201).json({response: true, message: 'Student registration success.', data: newStudent})
+          })
+        })
+      } catch (error) {
+        return res.status(500).json({response: false, message: error.message})
+      }
     }
 }
