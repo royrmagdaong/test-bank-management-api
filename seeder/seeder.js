@@ -8,7 +8,7 @@ const Admin = require('../models/admin')
 const Student = require('../models/student')
 const Professor = require('../models/professor')
 const Subject = require('../models/subject')
-const Course = require('../models/course')
+const GradeLevel = require('../models/grade-level')
 const fs = require('fs')
 
 let password = 'password'
@@ -41,7 +41,7 @@ seeder.connect(process.env.DATABASE_URL, { useUnifiedTopology: true, useNewUrlPa
                         './models/student',
                         './models/professor',
                         './models/subject',
-                        './models/course'
+                        './models/grade-level'
                     ])
                 
                     // clear models
@@ -51,7 +51,7 @@ seeder.connect(process.env.DATABASE_URL, { useUnifiedTopology: true, useNewUrlPa
                         'Student',
                         'Professor',
                         'Subject',
-                        'Course'
+                        'GradeLevel'
                     ], async ()=> {
 
                         // create admin user
@@ -63,8 +63,8 @@ seeder.connect(process.env.DATABASE_URL, { useUnifiedTopology: true, useNewUrlPa
                         // populate user and student
                         await populateUserStudent(roles, hashPassword)
                         
-                        // populate course
-                        await populateCourse()
+                        // populate grade level
+                        await populateGradeLevel()
 
                         // populate subject
                         await populateSubject()
@@ -142,36 +142,16 @@ const professor = [
     }
 ]
 
-const course = [
+const grade_level = [
     {
-        code: "BSIT",
-        description: "BS in Information Technology",
-        sections: ['A','B','C','D']
+        index: 1,
+        grade_level: "Grade 11",
+        description: '1st year senior high'
     },
     {
-        code: "BSOA",
-        description: "BS in Office Administration",
-        sections: ['A','B','C','D']
-    },
-    {
-        code: "COA",
-        description: "Certificate in Office Administration",
-        sections: ['A','B','C','D']
-    },
-    {
-        code: "CCS",
-        description: "Certificate in Computer Science",
-        sections: ['A','B','C','D']
-    },
-    {
-        code: "CHS",
-        description: "Computer Hardware Servicing NCII",
-        sections: ['A','B','C','D']
-    },
-    {
-        code: "CHRM",
-        description: "Certificate in Hotel and Restaurant Management",
-        sections: ['A','B','C','D']
+        index: 2,
+        grade_level: "Grade 12",
+        description: '2nd year senior high'
     }
 ]
 
@@ -306,19 +286,19 @@ const populateUserProfessor = async (roles, hashPassword) => {
     }
 }
 
-const populateCourse = async () => {
-    for(let i = 0; i<course.length;i++){
-        let course_ = await new Course({
-            code: course[i].code,
-            description: course[i].description,
-            sections: course[i].sections
+const populateGradeLevel = async () => {
+    for(let i = 0; i<grade_level.length;i++){
+        let grade_ = await new GradeLevel({
+            index: grade_level[i].index,
+            description: grade_level[i].description,
+            grade_level: grade_level[i].grade_level
         })
-        await course_.save((err, newCourse) =>{
-            if(err){ return console.log('failed to create course.') }
-            if(newCourse){
-                console.log(newCourse.code + ' course created.')
+        await grade_.save((err, newGradeLevel) =>{
+            if(err){ return console.log('failed to create new grade level.') }
+            if(newGradeLevel){
+                console.log(newGradeLevel.grade_level + ' grade level created.')
             }else{
-                return console.log('failed to create course.') 
+                return console.log('failed to create new grade level.') 
             }
         })
     }

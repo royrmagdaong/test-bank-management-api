@@ -1,17 +1,17 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const courseSchema = Schema({
-    code:{
-        type: String,
+const gradeSchema = Schema({
+    index: {
+        type: Number,
         required: true
     },
     description:{
         type: String,
         required: true
     },
-    sections:{
-        type: Array,
+    grade_level:{
+        type: String,
         required: true
     },
     created_at:{
@@ -29,4 +29,4 @@ const courseSchema = Schema({
     }
 })
 
-module.exports = mongoose.model('Course', courseSchema)
+module.exports = mongoose.model('GradeLevel', gradeSchema)
