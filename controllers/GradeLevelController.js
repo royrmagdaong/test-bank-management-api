@@ -39,5 +39,27 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({response:false, message: error.message})
         }
+    },
+    createGradeLevel: async (req, res) => {
+        try {
+            let index
+            let description = req.body.description
+            let grade_level = req.body.grade_level
+            
+            await GradeLevel.findOne({},{},{sort:{created_at: -1}}, async (error, lastRecord) => {
+                if(error) return res.status(500).json({response: false, message: error.message})
+                index = lastRecord.index+1
+                await new GradeLevel({
+                    index,
+                    description,
+                    grade_level
+                }).save(async(error,newGradeLevel)=>{
+                    if(error) return res.status(500).json({response: false, message: error.message})
+                    return res.status(201).json({response: true, data: newGradeLevel})
+                })
+            })
+        } catch (error) {
+            return res.status(500).json({response: false, message:error.message})
+        }
     }
 }

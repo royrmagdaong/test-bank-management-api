@@ -147,11 +147,6 @@ const grade_level = [
         index: 1,
         grade_level: "Grade 11",
         description: '1st year senior high'
-    },
-    {
-        index: 2,
-        grade_level: "Grade 12",
-        description: '2nd year senior high'
     }
 ]
 

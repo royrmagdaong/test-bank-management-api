@@ -10,5 +10,11 @@ router.post('/',
     authRole(['admin']), 
     GradeLevelController.getGradeLevels
 )
+// create grade level
+router.post('/create', 
+    authenticate, 
+    authRole(['admin']), 
+    GradeLevelController.createGradeLevel
+)
 
 module.exports = router
