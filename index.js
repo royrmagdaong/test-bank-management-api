@@ -32,11 +32,13 @@ db.once('open', () => console.log('Connected to Database'))
 const UserRoutes = require('./routes/Users')
 const StudentRoutes = require('./routes/Student')
 const ProfessorRoutes = require('./routes/Professor')
+const SubjectRoutes = require('./routes/Subject')
 
 // Routes
 app.use('/user', UserRoutes)
 app.use('/student', StudentRoutes)
 app.use('/prof', ProfessorRoutes)
+app.use('/subject', SubjectRoutes)
 
 
 httpServer.listen(process.env.PORT, () => console.log(`Server Started at port ${process.env.PORT}`))

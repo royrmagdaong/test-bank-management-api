@@ -177,8 +177,10 @@ const course = [
 
 const subject = [
     {
+        index:1,
         code: 'MATH1',
-        description: 'Elementary Algebra'
+        description: 'Elementary Algebra',
+        grade_level: 'Grade 11'
     }
 ]
 
@@ -325,8 +327,10 @@ const populateCourse = async () => {
 const populateSubject = async () => {
     for(let i = 0; i<subject.length;i++){
         let subject_ = await new Subject({
+            index: subject[i].index,
             code: subject[i].code,
-            description: subject[i].description
+            description: subject[i].description,
+            grade_level: subject[i].grade_level
         })
         await subject_.save((err, newSubj) =>{
             if(err){ return console.log('failed to create subject.') }
