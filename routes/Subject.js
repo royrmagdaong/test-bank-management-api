@@ -10,6 +10,12 @@ router.post('/',
     authRole(['admin']), 
     SubjectController.getSubjects
 )
+// create subject
+router.post('/create', 
+    authenticate, 
+    authRole(['admin']), 
+    SubjectController.createSubject
+)
 
 
 module.exports = router
