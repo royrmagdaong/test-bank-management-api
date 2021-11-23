@@ -1,6 +1,108 @@
 const Class = require('../models/class')
 
 module.exports = {
+    getClasses: async (req, res) => {
+        try {
+            let searchString = req.body.searchString
+            let limit = req.body.limit
+            let skip = req.body.skip
+            let regexp = new RegExp("^"+ searchString, 'i')
+            let count
+
+            await Class.aggregate([
+                {
+                    $lookup:{ from: 'subjects', localField: 'class_code', foreignField: '_id', as: 'class_code' }
+                },
+                {   $unwind: "$class_code" },
+                {
+                    $lookup:{ from: 'professors', localField: 'instructor', foreignField: '_id', as: 'instructor' }
+                },
+                {   $unwind: "$instructor" },
+                {
+                    $lookup:{ from: 'rooms', localField: 'room', foreignField: '_id', as: 'room' }
+                },
+                {   $unwind: "$room" },
+                {
+                    $lookup:{ from: 'gradelevels', localField: 'section', foreignField: '_id', as: 'section' }
+                },
+                {   $unwind: "$section" },
+                {
+                    $match: {
+                        $or: [
+                            {days_and_time: regexp},
+                            { "section.grade_level": regexp },
+                            { "section.section": regexp },
+                            { "room.room": regexp },
+                            { "instructor.first_name": regexp },
+                            { "instructor.last_name": regexp },
+                            { "class_code.code": regexp },
+                            { "class_code.description": regexp },
+                        ]
+                    }
+                },
+                {
+                    $group:{
+                        _id: null,
+                        count: {$sum:1}
+                    }
+                }
+            ]).exec(async (error, classes) => {
+                if(error) return res.json({response: false, message: error.message})
+                if(classes.length>0){
+                    count = classes[0].count
+                }else{
+                    count = 0
+                }
+                
+                await Class.aggregate([
+                    {
+                        $lookup:{ from: 'subjects', localField: 'class_code', foreignField: '_id', as: 'class_code' }
+                    },
+                    {   $unwind: "$class_code" },
+                    {
+                        $lookup:{ from: 'professors', localField: 'instructor', foreignField: '_id', as: 'instructor' }
+                    },
+                    {   $unwind: "$instructor" },
+                    {
+                        $lookup:{ from: 'rooms', localField: 'room', foreignField: '_id', as: 'room' }
+                    },
+                    {   $unwind: "$room" },
+                    {
+                        $lookup:{ from: 'gradelevels', localField: 'section', foreignField: '_id', as: 'section' }
+                    },
+                    {   $unwind: "$section" },
+                    {
+                        $match: {
+                            $or: [
+                                {days_and_time: regexp},
+                                { "section.grade_level": regexp },
+                                { "section.section": regexp },
+                                { "room.room": regexp },
+                                { "instructor.first_name": regexp },
+                                { "instructor.last_name": regexp },
+                                { "class_code.code": regexp },
+                                { "class_code.description": regexp },
+                            ]
+                        }
+                    },
+                    { $limit: limit + skip },
+                    { $skip: skip }
+                ]).exec(async (error, classes) => {
+                    if(error) return res.json({response: false, message: error.message})
+                    return res.json({
+                        response: true, 
+                        data: classes, 
+                        count: count,
+                        limit: limit,
+                        skip: skip
+                    })
+                })
+            })
+
+        } catch (error) {
+            res.status(500).json({response:false,message:error.message})
+        }
+    },
     createClass: async (req, res) => {
         try {
             let index
