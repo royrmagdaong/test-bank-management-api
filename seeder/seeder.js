@@ -146,7 +146,8 @@ const grade_level = [
     {
         index: 1,
         grade_level: "Grade 11",
-        description: '1st year senior high'
+        description: '1st year senior high',
+        section: 'A'
     }
 ]
 
@@ -286,7 +287,8 @@ const populateGradeLevel = async () => {
         let grade_ = await new GradeLevel({
             index: grade_level[i].index,
             description: grade_level[i].description,
-            grade_level: grade_level[i].grade_level
+            grade_level: grade_level[i].grade_level,
+            section: grade_level[i].section
         })
         await grade_.save((err, newGradeLevel) =>{
             if(err){ return console.log('failed to create new grade level.') }

@@ -14,6 +14,10 @@ const gradeSchema = Schema({
         type: String,
         required: true
     },
+    section:{
+        type: String,
+        required: true
+    },
     created_at:{
         type: Date,
         required: true,

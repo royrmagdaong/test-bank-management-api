@@ -11,7 +11,8 @@ module.exports = {
             const count = await GradeLevel.countDocuments({ 
                 $or: [
                     {grade_level: regexp}, 
-                    {description: regexp}
+                    {description: regexp},
+                    {section: regexp}
                 ] 
             });
 
@@ -20,7 +21,8 @@ module.exports = {
                     $match: {
                     $or: [
                         {grade_level: regexp}, 
-                        {description: regexp}
+                        {description: regexp},
+                        {section: regexp}
                     ]
                     }
                 },
@@ -45,6 +47,7 @@ module.exports = {
             let index
             let description = req.body.description
             let grade_level = req.body.grade_level
+            let section = req.body.section
             
             await GradeLevel.findOne({},{},{sort:{created_at: -1}}, async (error, lastRecord) => {
                 if(error) return res.status(500).json({response: false, message: error.message})
@@ -52,7 +55,8 @@ module.exports = {
                 await new GradeLevel({
                     index,
                     description,
-                    grade_level
+                    grade_level,
+                    section
                 }).save(async(error,newGradeLevel)=>{
                     if(error) return res.status(500).json({response: false, message: error.message})
                     return res.status(201).json({response: true, data: newGradeLevel})
