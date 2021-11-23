@@ -34,6 +34,7 @@ const StudentRoutes = require('./routes/Student')
 const ProfessorRoutes = require('./routes/Professor')
 const SubjectRoutes = require('./routes/Subject')
 const GradeLevelRoutes = require('./routes/GradeLevel')
+const ClassRoutes = require('./routes/Class')
 
 // Routes
 app.use('/user', UserRoutes)
@@ -41,6 +42,7 @@ app.use('/student', StudentRoutes)
 app.use('/prof', ProfessorRoutes)
 app.use('/subject', SubjectRoutes)
 app.use('/grade-level', GradeLevelRoutes)
+app.use('/class', ClassRoutes)
 
 
 httpServer.listen(process.env.PORT, () => console.log(`Server Started at port ${process.env.PORT}`))

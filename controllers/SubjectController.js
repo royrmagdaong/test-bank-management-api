@@ -18,6 +18,13 @@ module.exports = {
   
             await Subject.aggregate([
                 {
+                    $addFields: {
+                    code_and_description: {
+                        $concat: ["$code", ' - ',"$description"],
+                    }
+                    },
+                },
+                {
                   $match: {
                     $or: [
                         {code: regexp}, 
