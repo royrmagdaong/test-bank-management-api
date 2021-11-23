@@ -9,6 +9,7 @@ const Student = require('../models/student')
 const Professor = require('../models/professor')
 const Subject = require('../models/subject')
 const GradeLevel = require('../models/grade-level')
+const Room = require('../models/room')
 const fs = require('fs')
 
 let password = 'password'
@@ -41,7 +42,8 @@ seeder.connect(process.env.DATABASE_URL, { useUnifiedTopology: true, useNewUrlPa
                         './models/student',
                         './models/professor',
                         './models/subject',
-                        './models/grade-level'
+                        './models/grade-level',
+                        './models/room'
                     ])
                 
                     // clear models
@@ -51,7 +53,8 @@ seeder.connect(process.env.DATABASE_URL, { useUnifiedTopology: true, useNewUrlPa
                         'Student',
                         'Professor',
                         'Subject',
-                        'GradeLevel'
+                        'GradeLevel',
+                        'Room'
                     ], async ()=> {
 
                         // create admin user
@@ -68,6 +71,9 @@ seeder.connect(process.env.DATABASE_URL, { useUnifiedTopology: true, useNewUrlPa
 
                         // populate subject
                         await populateSubject()
+
+                        // populate room
+                        await populateRoom()
 
                         await setTimeout(()=>{
                             seeder.disconnect();
@@ -157,6 +163,13 @@ const subject = [
         code: 'MATH1',
         description: 'Elementary Algebra',
         grade_level: 'Grade 11'
+    }
+]
+
+const room = [
+    {
+        index:1,
+        room: 'Room 101'
     }
 ]
 
@@ -315,6 +328,23 @@ const populateSubject = async () => {
                 console.log(newSubj.code + ' subject created.')
             }else{
                 return console.log('failed to create subject.') 
+            }
+        })
+    }
+}
+
+const populateRoom = async () => {
+    for(let i = 0; i<room.length;i++){
+        let room_ = await new Room({
+            index: room[i].index,
+            room: room[i].room
+        })
+        await room_.save((err, newRoom) =>{
+            if(err){ return console.log('failed to create room.') }
+            if(newRoom){
+                console.log(newRoom.room + ' room created.')
+            }else{
+                return console.log('failed to create room.') 
             }
         })
     }
