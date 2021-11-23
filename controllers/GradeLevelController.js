@@ -18,6 +18,13 @@ module.exports = {
 
             await GradeLevel.aggregate([
                 {
+                    $addFields: {
+                    grade_and_section: {
+                        $concat: ["$grade_level", ' - ',"$section"],
+                    }
+                    },
+                },
+                {
                     $match: {
                     $or: [
                         {grade_level: regexp}, 
