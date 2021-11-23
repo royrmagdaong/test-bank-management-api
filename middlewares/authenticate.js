@@ -13,7 +13,7 @@ function authenticate(req, res, next){
             }
         });
     } catch (error) {
-        return res.status(401).json({message: "Not authorized."})
+        return res.status(403).json({message: "Not authorized."})
     }
 }
 

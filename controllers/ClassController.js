@@ -9,7 +9,6 @@ module.exports = {
             let days_and_time = req.body.days_and_time
             let room = req.body.room
             let section = req.body.section
-            let students = req.body.students
             
             await Class.findOne({},{},{sort:{created_at: -1}}, async (error, lastRecord) => {
                 if(error) return res.status(500).json({response: false, message: error.message})
@@ -24,8 +23,7 @@ module.exports = {
                     instructor,
                     days_and_time,
                     room,
-                    section,
-                    students
+                    section
                 }).save(async(error,newClass)=>{
                     if(error) return res.status(500).json({response: false, message: error.message})
                     return res.status(201).json({response: true, data: newClass})

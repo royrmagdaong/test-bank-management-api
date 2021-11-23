@@ -7,29 +7,29 @@ const classSchema = Schema({
         required: true
     },
     class_code:{
-        type: String,
-        required: true
+        type: Schema.Types.ObjectId, 
+        ref: 'Subject'
     },
     instructor:{
-        type: String,
-        required: true
+        type: Schema.Types.ObjectId, 
+        ref: 'Professor'
     },
     days_and_time:{
         type: String,
         required: true
     },
     room:{
-        type: String,
-        required: true
+        type: Schema.Types.ObjectId, 
+        ref: 'Room'
     },
     section:{
-        type: String,
-        required: true
+        type: Schema.Types.ObjectId, 
+        ref: 'GradeLevel'
     },
-    students:{
-        type: Array,
-        default: null
-    },
+    students:[{
+        type: Schema.Types.ObjectId, 
+        ref: 'Student'
+    }],
     created_at:{
         type: Date,
         required: true,
