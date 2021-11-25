@@ -174,5 +174,22 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({response:false, message: error.message})
         }
+    },
+    getStudentSubjects: async (req, res) => {
+        try {
+            let student_id = req.body.student_id
+            await Class.find({students: student_id})
+            .populate(['class_code','instructor','room','section'])
+            .exec((error,classes)=>{
+                if(error) return res.status(500).json({response: true, message: error.message})
+                if(classes){
+                    return res.status(200).json({response:true, data: classes})
+                }else{
+                    return res.status(404).json({response: false, message: 'Nothing found!'})
+                }
+            })
+        } catch (error) {
+            return res.status(500).json({response: true, message: error.message})
+        }
     }
 }

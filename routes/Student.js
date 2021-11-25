@@ -25,6 +25,13 @@ router.post('/students',
     authenticate, 
     authRole(['admin']), 
     StudentController.getStudentByStudentID
-)
+),
+
+// get student info
+router.post('/student-info', 
+    authenticate, 
+    authRole(['admin','student']), 
+    StudentController.getStudentInfo
+),
 
 module.exports = router

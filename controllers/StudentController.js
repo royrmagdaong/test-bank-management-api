@@ -136,5 +136,20 @@ module.exports = {
       } catch (error) {
           return res.json({response: false, message: error.message})
       }
+    },
+    getStudentInfo: async (req, res) => {
+      try {
+        let user_id = res.user.id
+        await Student.findOne({user_id: user_id}).exec((error, student)=>{
+          if(error) return res.status(500).json({response:false,message:error.message})
+          if(student){
+            return res.status(200).json({response:true,data: student})
+          }else{
+            return res.status(500).json({response:false,message: 'Nothing found!'})
+          }
+        })
+      } catch (error) {
+        return res.status(500).json({response:false,message:error.message})
+      }
     }
 }

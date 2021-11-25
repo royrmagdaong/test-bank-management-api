@@ -32,4 +32,11 @@ router.post('/students',
     ClassController.getStudents
 )
 
+// get student subjects
+router.post('/student-subjects', 
+    authenticate, 
+    authRole(['admin','student']), 
+    ClassController.getStudentSubjects
+)
+
 module.exports = router
