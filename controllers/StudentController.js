@@ -84,5 +84,57 @@ module.exports = {
       } catch (error) {
         return res.status(500).json({response: false, message: error.message})
       }
+    },
+    getStudentByStudentID: async (req, res) => {
+      try {
+        let searchString = req.body.searchString
+        let limit = req.body.limit
+        let skip = req.body.skip
+        let regexp = new RegExp("^"+ searchString, 'i')
+
+        const count = await Student.countDocuments({ 
+          $or: [
+            {student_id: regexp},
+            {first_name: regexp},
+            {last_name: regexp},
+            {course: regexp},
+            {year_level: regexp},
+          ] 
+        });
+
+        await Student.aggregate([
+          {
+            $addFields: {
+              student_info: {
+                $concat: ["$student_id", ' - ',"$last_name", ', ',"$first_name", ' - ', "$year_level", ' year ', "$course"],
+              }
+            },
+          },
+          {
+            $match: {
+              $or: [
+                {student_id:regexp},
+                {first_name: regexp},
+                {last_name: regexp},
+                {course: regexp},
+                {year_level: regexp},
+              ]
+            }
+          },
+          { $limit: limit + skip },
+          { $skip: skip }
+        ]).exec((error, students) => {
+          if(error) return res.json({response: false, message: error.message})
+          return res.json({
+            response: true, 
+            data: students, 
+            count: count,
+            limit: limit,
+            skip: skip
+          })
+        })
+      } catch (error) {
+          return res.json({response: false, message: error.message})
+      }
     }
 }

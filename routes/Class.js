@@ -18,5 +18,18 @@ router.post('/create',
     ClassController.createClass
 )
 
+// add student
+router.post('/add-student', 
+    authenticate, 
+    authRole(['admin']), 
+    ClassController.addStudent
+)
+
+// get students
+router.post('/students', 
+    authenticate, 
+    authRole(['admin']), 
+    ClassController.getStudents
+)
 
 module.exports = router

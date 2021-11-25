@@ -20,4 +20,11 @@ router.post('/create',
     StudentController.createStudent
 )
 
+// get students by id
+router.post('/students', 
+    authenticate, 
+    authRole(['admin']), 
+    StudentController.getStudentByStudentID
+)
+
 module.exports = router
