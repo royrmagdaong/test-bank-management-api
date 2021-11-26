@@ -191,5 +191,22 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({response: true, message: error.message})
         }
-    }
+    },
+    getProfessorSubjects: async (req, res) => {
+        try {
+            let prof_id = req.body.prof_id
+            await Class.find({instructor: prof_id})
+            .populate(['class_code','room','section','students'])
+            .exec((error,classes)=>{
+                if(error) return res.status(500).json({response: true, message: error.message})
+                if(classes){
+                    return res.status(200).json({response:true, data: classes})
+                }else{
+                    return res.status(404).json({response: false, message: 'Nothing found!'})
+                }
+            })
+        } catch (error) {
+            return res.status(500).json({response: true, message: error.message})
+        }
+    },
 }

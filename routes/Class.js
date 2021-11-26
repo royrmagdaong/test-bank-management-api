@@ -39,4 +39,11 @@ router.post('/student-subjects',
     ClassController.getStudentSubjects
 )
 
+// get professor subjects
+router.post('/prof-subjects', 
+    authenticate, 
+    authRole(['admin','professor']), 
+    ClassController.getProfessorSubjects
+)
+
 module.exports = router

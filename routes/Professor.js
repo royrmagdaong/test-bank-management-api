@@ -18,4 +18,11 @@ router.post('/create',
     ProfessorController.createProfessor
 )
 
+// create professor
+router.post('/prof-info', 
+    authenticate, 
+    authRole(['admin', 'professor']), 
+    ProfessorController.getProfessorInfo
+)
+
 module.exports = router
