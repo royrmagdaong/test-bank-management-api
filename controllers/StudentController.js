@@ -21,6 +21,9 @@ module.exports = {
                 $addFields: {
                   full_name: {
                     $concat: ["$first_name", ' ',"$middle_name", ' ',"$last_name"],
+                  },
+                  id_and_name: {
+                    $concat: ["$student_id", ' - ',"$first_name", ' ',"$last_name"],
                   }
                 },
               },
@@ -151,5 +154,68 @@ module.exports = {
       } catch (error) {
         return res.status(500).json({response:false,message:error.message})
       }
-    }
+    },
+    getStudentsWithoutUser: async (req, res) => {
+      try {
+        let searchString = req.body.searchString
+        let limit = req.body.limit
+        let skip = req.body.skip
+        let regexp = new RegExp("^"+ searchString, 'i')
+
+        const count = await Student.countDocuments({ 
+          $and:[
+            {
+              $or: [
+                {student_id: regexp}, 
+                {first_name: regexp}, 
+                {middle_name: regexp}, 
+                {last_name: regexp}
+              ]
+            },
+            { user_id: null }
+          ]
+        });
+
+        await Student.aggregate([
+            {
+              $addFields: {
+                full_name: {
+                  $concat: ["$first_name", ' ',"$middle_name", ' ',"$last_name"],
+                },
+                id_and_name: {
+                  $concat: ["$student_id", ' - ',"$first_name", ' ',"$last_name"],
+                }
+              },
+            },
+            {
+              $match: {
+                $and:[
+                  {
+                    $or: [
+                      {student_id: regexp}, 
+                      {first_name: regexp}, 
+                      {middle_name: regexp}, 
+                      {last_name: regexp}
+                    ]
+                  },
+                  { user_id: null }
+                ]
+              }
+            },
+            { $limit: limit + skip },
+            { $skip: skip }
+          ]).exec((error, students) => {
+            if(error) return res.json({response: false, message: error.message})
+            return res.json({
+              response: true, 
+              data: students, 
+              count: count,
+              limit: limit,
+              skip: skip
+            })
+        })
+      } catch (error) {
+          return res.json({response: false, message: error.message})
+      }
+    },
 }

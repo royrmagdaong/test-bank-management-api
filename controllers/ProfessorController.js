@@ -95,17 +95,80 @@ module.exports = {
     },
     getProfessorInfo: async (req, res) => {
         try {
-          let user_id = res.user.id
-          await Professor.findOne({user_id: user_id}).exec((error, professor)=>{
+            let user_id = res.user.id
+            await Professor.findOne({user_id: user_id}).exec((error, professor)=>{
             if(error) return res.status(500).json({response:false,message:error.message})
             if(professor){
-              return res.status(200).json({response:true,data: professor})
+                return res.status(200).json({response:true,data: professor})
             }else{
-              return res.status(500).json({response:false,message: 'Nothing found!'})
+                return res.status(500).json({response:false,message: 'Nothing found!'})
             }
-          })
+            })
         } catch (error) {
-          return res.status(500).json({response:false,message:error.message})
+            return res.status(500).json({response:false,message:error.message})
         }
-      }
+    },
+    getProfessorsWithoutUser: async (req, res) => {
+        try {
+            let searchString = req.body.searchString
+            let limit = req.body.limit
+            let skip = req.body.skip
+            let regexp = new RegExp("^"+ searchString, 'i')
+
+            const count = await Professor.countDocuments({ 
+            $and:[
+                {
+                $or: [
+                    {id_number: regexp}, 
+                    {first_name: regexp}, 
+                    {middle_name: regexp}, 
+                    {last_name: regexp}
+                ]
+                },
+                { user_id: null }
+            ]
+            });
+
+            await Professor.aggregate([
+                {
+                $addFields: {
+                    full_name: {
+                    $concat: ["$first_name", ' ',"$middle_name", ' ',"$last_name"],
+                    },
+                    id_and_name: {
+                    $concat: ["$id_number", ' - ',"$first_name", ' ',"$last_name"],
+                    }
+                },
+                },
+                {
+                $match: {
+                    $and:[
+                    {
+                        $or: [
+                        {id_number: regexp}, 
+                        {first_name: regexp}, 
+                        {middle_name: regexp}, 
+                        {last_name: regexp}
+                        ]
+                    },
+                    { user_id: null }
+                    ]
+                }
+                },
+                { $limit: limit + skip },
+                { $skip: skip }
+            ]).exec((error, professors) => {
+                if(error) return res.json({response: false, message: error.message})
+                return res.json({
+                response: true, 
+                data: professors, 
+                count: count,
+                limit: limit,
+                skip: skip
+                })
+            })
+        } catch (error) {
+            return res.json({response: false, message: error.message})
+        }
+    },
 }

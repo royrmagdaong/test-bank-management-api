@@ -34,4 +34,11 @@ router.post('/student-info',
     StudentController.getStudentInfo
 ),
 
+// get all students without user_id
+router.post('/students-no-user', 
+    authenticate, 
+    authRole(['admin']), 
+    StudentController.getStudentsWithoutUser
+)
+
 module.exports = router

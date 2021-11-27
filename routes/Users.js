@@ -18,6 +18,7 @@ router.post('/signin',
 )
 // create user
 router.post('/create', 
+    checkEmail,
     UserController.createUser
 )
 

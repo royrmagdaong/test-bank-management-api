@@ -1,4 +1,6 @@
 const User = require('../models/user')
+const Student = require('../models/student')
+const Professor = require('../models/professor')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const saltRounds = 10;
@@ -77,6 +79,7 @@ module.exports = {
     },
     createUser: async (req, res) => {
         try {
+            let id = req.body.id
             let account_name = req.body.account_name
             let email = req.body.email
             let role = req.body.role
@@ -94,9 +97,46 @@ module.exports = {
                     email: email,
                     password: hashPassword
                 })
-                await user.save((error, newUser)=>{
+                await user.save(async (error, newUser)=>{
                     if(error) return res.status(500).json({response: false, message:error.message})
-                    return res.status(201).json({response: true, message: `${email} is created successfully!`})
+                    if(newUser){
+                        if(role==='student'){
+                            await Student.findOne({_id:id}).exec(async (error, student)=>{
+                                if(error) return res.status(500).json({response: false, message:error.message})
+                                if(student){
+                                    student.user_id = newUser._id
+                                    student.email = email
+                                    student.save((error)=>{
+                                        if(error) return res.status(500).json({response: false, message:error.message})
+                                    })
+                                    return res.status(201).json({response: true, message: `${email} is created successfully!`})
+                                }else{
+                                    console.log(id)
+                                    return res.status(500).json({response: false, message: `creation failed!`})
+                                }
+                            })
+                        }
+                        if(role==='professor'){
+                            await Professor.findOne({_id:id}).exec(async (error, professor)=>{
+                                if(error) return res.status(500).json({response: false, message:error.message})
+                                if(professor){
+                                    professor.user_id = newUser._id
+                                    professor.email = email
+                                    professor.save((error)=>{
+                                        if(error) return res.status(500).json({response: false, message:error.message})
+                                    })
+                                    return res.status(201).json({response: true, message: `${email} is created successfully!`})
+                                }else{
+                                    return res.status(500).json({response: false, message: `creation failed!`})
+                                }
+                            })
+                        }
+                        if(role==='admin'){
+                            return res.status(201).json({response: true, message: `${email} is created successfully!`})
+                        }
+                    }else{
+                        return res.status(500).json({response: false, message: `creation failed!`})
+                    }
                 })
             })
         } catch (error) {

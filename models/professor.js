@@ -4,7 +4,8 @@ const Schema = mongoose.Schema
 const professorSchema = Schema({
     user_id: {
         type: Schema.Types.ObjectId, 
-        ref: 'User'
+        ref: 'User',
+        default: null
     },
     id_number: {
         type: String,
