@@ -59,6 +59,8 @@ module.exports = {
         let first_name = req.body.first_name
         let middle_name = req.body.middle_name
         let last_name = req.body.last_name
+        let gender = req.body.gender
+        let email = req.body.email
         let status = req.body.status
         let year_level = req.body.year_level
         let section = req.body.section
@@ -74,6 +76,8 @@ module.exports = {
             student_id: student_id,
             first_name: first_name,
             middle_name: middle_name,
+            gender: gender,
+            email: email,
             last_name: last_name,
             section: section,
             year_level: year_level,
