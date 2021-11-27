@@ -10,6 +10,7 @@ const Professor = require('../models/professor')
 const Subject = require('../models/subject')
 const GradeLevel = require('../models/grade-level')
 const Room = require('../models/room')
+const Class = require('../models/class')
 const fs = require('fs')
 
 let password = 'password'
@@ -43,7 +44,8 @@ seeder.connect(process.env.DATABASE_URL, { useUnifiedTopology: true, useNewUrlPa
                         './models/professor',
                         './models/subject',
                         './models/grade-level',
-                        './models/room'
+                        './models/room',
+                        './models/class',
                     ])
                 
                     // clear models
@@ -54,7 +56,8 @@ seeder.connect(process.env.DATABASE_URL, { useUnifiedTopology: true, useNewUrlPa
                         'Professor',
                         'Subject',
                         'GradeLevel',
-                        'Room'
+                        'Room',
+                        'Class',
                     ], async ()=> {
 
                         // create admin user
