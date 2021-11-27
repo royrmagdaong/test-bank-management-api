@@ -109,7 +109,7 @@ const student = [
         email: 'angelo@gmail.com',
         course: 'BSIT',
         section: 'B',
-        year_level: '1st'
+        year_level: 'Grade 11'
     },
     {
         student_id: '202100000',
@@ -121,7 +121,7 @@ const student = [
         email: 'alejandro@gmail.com',
         course: 'BSIT',
         section: 'A',
-        year_level: '2nd'
+        year_level: 'Grade 11'
     },
     {
         student_id: '202100000',
@@ -133,7 +133,7 @@ const student = [
         email: 'peterson@gmail.com',
         course: 'BSOA',
         section: 'C',
-        year_level: '4th'
+        year_level: 'Grade 12'
     }
 ]
 

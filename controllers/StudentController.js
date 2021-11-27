@@ -113,7 +113,7 @@ module.exports = {
           {
             $addFields: {
               student_info: {
-                $concat: ["$student_id", ' - ',"$last_name", ', ',"$first_name", ' - ', "$year_level", ' year ', "$course"],
+                $concat: ["$student_id", ' - ',"$last_name", ', ',"$first_name", ' - ', "$year_level"],
               }
             },
           },
