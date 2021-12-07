@@ -2,7 +2,11 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const activitySchema = Schema({
-    title:{
+    prof_id: {
+        type: Schema.Types.ObjectId, 
+        ref: 'Professor'
+    },
+    activityName:{
         type: String,
         required: true
     },

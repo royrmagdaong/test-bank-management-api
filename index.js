@@ -36,6 +36,7 @@ const SubjectRoutes = require('./routes/Subject')
 const GradeLevelRoutes = require('./routes/GradeLevel')
 const ClassRoutes = require('./routes/Class')
 const RoomRoutes = require('./routes/Room')
+const ActivityRoutes = require('./routes/Activity')
 
 // Routes
 app.use('/user', UserRoutes)
@@ -45,6 +46,7 @@ app.use('/subject', SubjectRoutes)
 app.use('/grade-level', GradeLevelRoutes)
 app.use('/class', ClassRoutes)
 app.use('/room', RoomRoutes)
+app.use('/activity', ActivityRoutes)
 
 
 httpServer.listen(process.env.PORT, () => console.log(`Server Started at port ${process.env.PORT}`))
