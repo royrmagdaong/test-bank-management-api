@@ -30,5 +30,23 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({response:false, message: error.message})
         }
+    },
+    getProfActivities: async (req, res) => {
+        try {
+            let user_id = res.user.id
+            await Professor.findOne({user_id: user_id}).exec(async (error, professor)=>{
+                if(error) return res.status(500).json({response:false, message: error.message})
+                if(professor){
+                    await Activity.find({prof_id:professor._id}).exec(async (error,activities)=>{
+                        if(error) return res.status(500).json({response:false, message: error.message})
+                        return res.status(200).json({response:true, data: activities})
+                    })
+                }else{
+                    return res.status(500).json({response:false, message: 'Cannot find the user.'})
+                }
+            })
+        } catch (error) {
+            return res.status(500).json({response:false, message: error.message})
+        }
     }
 }

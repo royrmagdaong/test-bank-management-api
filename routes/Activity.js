@@ -10,5 +10,11 @@ router.post('/create',
     authRole(['professor']), 
     ActivityController.createActivity
 )
+// get activities by prof
+router.post('/', 
+    authenticate, 
+    authRole(['professor']), 
+    ActivityController.getProfActivities
+)
 
 module.exports = router
