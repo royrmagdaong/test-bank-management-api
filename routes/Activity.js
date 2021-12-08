@@ -34,5 +34,11 @@ router.post('/delete/:id',
     authRole(['professor']), 
     ActivityController.deleteActivity
 )
+// get activitiy count by prof
+router.post('/count', 
+    authenticate, 
+    authRole(['professor']), 
+    ActivityController.getActivityCount
+)
 
 module.exports = router

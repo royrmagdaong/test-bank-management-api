@@ -2,6 +2,28 @@ const Activity = require('../models/activity')
 const Professor = require('../models/professor')
 
 module.exports = {
+    getActivityCount: async (req, res) =>{
+        try {
+            let id = res.user.id
+            await Professor.findOne({user_id:id}).exec(async(error, prof)=>{
+                if(error) return res.status(500).json({response:false, message:error.message})
+                if(prof){
+                    await Activity.countDocuments({deleted_at: null, prof_id:prof._id}).exec(async (error, activityCount)=>{
+                        if(error) return res.status(500).json({response:false, message:error.message})
+                        if(activityCount){
+                            return res.status(200).json({response:true, count: activityCount})
+                        }else{
+                            return res.status(200).json({response:true, count: 0})
+                        }
+                    })
+                }else{
+                    return res.status(403).json({response:false, message: 'Not allowed!'})
+                }
+            })
+        } catch (error) {
+            return res.status(500).json({response:false, message:error.message})
+        }
+    },
     createActivity: async (req, res) => {
         try {
             let user_id = res.user.id
