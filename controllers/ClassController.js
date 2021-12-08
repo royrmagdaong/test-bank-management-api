@@ -1,4 +1,5 @@
 const Class = require('../models/class')
+const Professor = require('../models/professor')
 
 module.exports = {
     getClasses: async (req, res) => {
@@ -209,4 +210,41 @@ module.exports = {
             return res.status(500).json({response: true, message: error.message})
         }
     },
+    getClassByProf: async(req, res) => {
+        try {
+            let user_id = res.user.id
+            await Professor.findOne({user_id:user_id}).exec(async (error,prof)=>{
+                if(error) return res.status(500).json({response:true, message:error.message})
+                if(prof){
+                    await Class.aggregate([
+                        {
+                            $lookup:{ from: 'subjects', localField: 'class_code', foreignField: '_id', as: 'class_code' }
+                        },
+                        {   $unwind: "$class_code" },
+                        {
+                            $lookup:{ from: 'gradelevels', localField: 'section', foreignField: '_id', as: 'section' }
+                        },
+                        {   $unwind: "$section" },
+                        {
+                            $addFields: {
+                                class_section: {
+                                    $concat: ["$class_code.code", ' - ',"$section.grade_level", ' - ',"$section.section"],
+                                }
+                            },
+                        },
+                        {
+                            $match: { instructor: prof._id }
+                        },
+                    ]).exec(async(error,classes)=>{
+                        if(error) return res.status(500).json({response:true, message:error.message})
+                        return res.status(200).json({response:true, data:classes})
+                    })
+                }else{
+                    return res.status(403).json({response:true, message:'Not allowed!'})
+                }
+            })
+        } catch (error) {
+            return res.status(500).json({response:true, message:error.message})
+        }
+    }
 }
