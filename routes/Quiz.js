@@ -40,5 +40,11 @@ router.post('/count',
     authRole(['professor']), 
     QuizController.getQuizCount
 )
+// assign class
+router.post('/assign-class', 
+    authenticate, 
+    authRole(['professor']), 
+    QuizController.assignClass
+)
 
 module.exports = router

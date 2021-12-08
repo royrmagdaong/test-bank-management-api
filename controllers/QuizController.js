@@ -153,5 +153,36 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({response:false, message:error.message})
         }
+    },
+    assignClass: async (req, res) => {
+        try {
+            let class_id = req.body.class_id
+            let quiz_id = req.body.quiz_id
+            let user_id = res.user.id
+
+            await Professor.findOne({user_id:user_id}).exec(async (error, prof)=>{
+                if(error) return res.status(500).json({response:false, message:error.message})
+                if(prof){
+                    await Quiz.findOne({prof_id:prof._id, _id: quiz_id}).exec(async(error, quiz)=>{
+                        if(error) return res.status(500).json({response:false, message:error.message})
+                        if(quiz){
+                            quiz.class.push(class_id)
+                            quiz.save(async(error)=>{
+                                if(error) return res.status(500).json({response:false, message:error.message})
+                                return res.status(200).json({response:true, message: 'Successfully assigned.'})
+                            })
+                        }else{
+                            return res.status(404).json({response:false, message:'Quiz not found!'})
+                        }
+                    })
+                }else{
+                    return res.status(403).json({response:false, message:'Not Allowed!'})
+                }
+            })
+
+            
+        } catch (error) {
+            return res.status(500).json({response:false, message:error.message})
+        }
     }
 }
