@@ -2,7 +2,11 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const examSchema = Schema({
-    title:{
+    prof_id: {
+        type: Schema.Types.ObjectId, 
+        ref: 'Professor'
+    },
+    examName:{
         type: String,
         required: true
     },
@@ -11,7 +15,7 @@ const examSchema = Schema({
         ref: 'Class'
     }],
     questions:[{
-        type: Map,
+        type: Object,
         of: String
     }],
     created_at:{
