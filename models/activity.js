@@ -15,7 +15,7 @@ const activitySchema = Schema({
         ref: 'Class'
     }],
     questions:[{
-        type: Map,
+        type: Object,
         of: String
     }],
     created_at:{
