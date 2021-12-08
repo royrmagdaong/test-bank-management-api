@@ -2,7 +2,11 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const quizSchema = Schema({
-    title:{
+    prof_id: {
+        type: Schema.Types.ObjectId, 
+        ref: 'Professor'
+    },
+    quizName:{
         type: String,
         required: true
     },
@@ -11,7 +15,7 @@ const quizSchema = Schema({
         ref: 'Class'
     }],
     questions:[{
-        type: Map,
+        type: Object,
         of: String
     }],
     created_at:{
