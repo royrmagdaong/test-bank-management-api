@@ -48,5 +48,28 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({response:false, message: error.message})
         }
+    },
+    getActivityById: async (req, res) => {
+        try {
+            let id = req.params.id
+            let user_id = res.user.id
+            await Professor.findOne({user_id:user_id}).exec(async (error,prof)=>{
+                if(error) return res.status(500).json({response:false, message:error.message})
+                if(prof){
+                    await Activity.findOne({_id:id, prof_id:prof._id}).exec(async(error,activity)=>{
+                        if(error) return res.status(500).json({response:false, message:error.message})
+                        if(activity){
+                            return res.status(200).json({response:true, data: activity})
+                        }else{
+                            return res.status(500).json({response:false, message:'Activity not found!'})
+                        }
+                    })
+                }else{
+                    return res.status(403).json({response:false, message:'Not authorized!'})
+                }
+            })
+        } catch (error) {
+            return res.status(500).json({response:false, message:error.message})
+        }
     }
 }
