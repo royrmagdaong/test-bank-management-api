@@ -37,7 +37,7 @@ module.exports = {
             await Professor.findOne({user_id: user_id}).exec(async (error, professor)=>{
                 if(error) return res.status(500).json({response:false, message: error.message})
                 if(professor){
-                    await Activity.find({prof_id:professor._id}).exec(async (error,activities)=>{
+                    await Activity.find({prof_id:professor._id,deleted_at:null}).exec(async (error,activities)=>{
                         if(error) return res.status(500).json({response:false, message: error.message})
                         return res.status(200).json({response:true, data: activities})
                     })
@@ -56,7 +56,7 @@ module.exports = {
             await Professor.findOne({user_id:user_id}).exec(async (error,prof)=>{
                 if(error) return res.status(500).json({response:false, message:error.message})
                 if(prof){
-                    await Activity.findOne({_id:id, prof_id:prof._id}).exec(async(error,activity)=>{
+                    await Activity.findOne({_id:id, prof_id:prof._id, deleted_at:null}).exec(async(error,activity)=>{
                         if(error) return res.status(500).json({response:false, message:error.message})
                         if(activity){
                             return res.status(200).json({response:true, data: activity})
@@ -82,7 +82,7 @@ module.exports = {
             await Professor.findOne({user_id:user_id}).exec(async (error,prof)=>{
                 if(error) return res.status(500).json({response:false, message:error.message})
                 if(prof){
-                    await Activity.findOne({_id:activityId, prof_id:prof._id}).exec(async(error,activity)=>{
+                    await Activity.findOne({_id:activityId, prof_id:prof._id, deleted_at:null}).exec(async(error,activity)=>{
                         if(error) return res.status(500).json({response:false, message:error.message})
                         if(activity){
                             activity.activityName = activityName
@@ -91,6 +91,34 @@ module.exports = {
                             await activity.save((error)=>{
                                 if(error) return res.status(500).json({response:false, message:error.message})
                                 return res.status(200).json({response:true, message: 'Activity has been updated successfully!'})
+                            })
+                        }else{
+                            return res.status(500).json({response:false, message:'Activity not found!'})
+                        }
+                    })
+                }else{
+                    return res.status(403).json({response:false, message:'Not authorized!'})
+                }
+            })
+        } catch (error) {
+            return res.status(500).json({response:false, message:error.message})
+        }
+    },
+    deleteActivity: async (req, res) => {
+        try {
+            let id = req.params.id 
+            let user_id = res.user.id
+
+            await Professor.findOne({user_id:user_id}).exec(async (error,prof)=>{
+                if(error) return res.status(500).json({response:false, message:error.message})
+                if(prof){
+                    await Activity.findOne({_id:id, prof_id:prof._id, deleted_at:null}).exec(async(error,activity)=>{
+                        if(error) return res.status(500).json({response:false, message:error.message})
+                        if(activity){
+                            activity.deleted_at = Date.now()
+                            await activity.save((error)=>{
+                                if(error) return res.status(500).json({response:false, message:error.message})
+                                return res.status(200).json({response:true, message: 'Activity has been deleted!'})
                             })
                         }else{
                             return res.status(500).json({response:false, message:'Activity not found!'})

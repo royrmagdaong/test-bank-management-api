@@ -28,5 +28,11 @@ router.post('/update',
     authRole(['professor']), 
     ActivityController.updateActivity
 )
+// delete activitiy
+router.post('/delete/:id', 
+    authenticate, 
+    authRole(['professor']), 
+    ActivityController.deleteActivity
+)
 
 module.exports = router
