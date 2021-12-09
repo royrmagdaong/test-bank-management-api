@@ -10,10 +10,6 @@ const activitySchema = Schema({
         type: String,
         required: true
     },
-    class:[{
-        type: Schema.Types.ObjectId, 
-        ref: 'Class'
-    }],
     questions:[{
         type: Object,
         of: String

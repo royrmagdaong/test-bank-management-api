@@ -1,5 +1,8 @@
+const mongoose = require('mongoose')
+const ObjectId = mongoose.Types.ObjectId;
 const Activity = require('../models/activity')
 const Professor = require('../models/professor')
+const Class = require('../models/class')
 
 module.exports = {
     getActivityCount: async (req, res) =>{
@@ -153,5 +156,89 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({response:false, message:error.message})
         }
+    },
+    assignActivityToClass: async (req, res) => {
+        try {
+            let class_id = req.body.class_id
+            let activity_id = req.body.activity_id
+            let user_id = res.user.id
+
+            await Professor.findOne({user_id:user_id}).exec(async (error, prof)=>{
+                if(error) return res.status(500).json({response:false, message:error.message})
+                if(prof){
+                    await Class.findOne({_id:class_id, instructor:prof._id}).exec(async(error, _class)=>{
+                        if(error) return res.status(500).json({response:false, message:error.message})
+                        if(_class){
+                            _class.activity.push(activity_id)
+                            _class.save(async(error)=>{
+                                if(error) return res.status(500).json({response:false, message:error.message})
+                                return res.status(200).json({response:true, message: 'Activity successfully added to class.'})
+                            })
+                        }else{
+                            return res.status(404).json({response:false, message:'Class not found!'})
+                        }
+                    })
+                }else{
+                    return res.status(403).json({response:false, message:'Not Allowed!'})
+                }
+            })
+
+            
+        } catch (error) {
+            return res.status(500).json({response:false, message:error.message})
+        }
+    },
+    getClassByProfActivity: async(req, res) => {
+        try {
+            let user_id = res.user.id
+            let activity_id = req.body.activity_id
+            await Professor.findOne({user_id:user_id}).exec(async (error,prof)=>{
+                if(error) return res.status(500).json({response:true, message:error.message})
+                if(prof){
+                    await Class.aggregate([
+                        {
+                            $project:{
+                                activity: 1,
+                                class_code: 1,
+                                instructor: 1,
+                                section: 1,
+                                disable:{
+                                    $in:[ObjectId(activity_id), "$activity"]
+                                }
+                            }
+                        },
+                        {
+                            $lookup:{ from: 'subjects', localField: 'class_code', foreignField: '_id', as: 'class_code' }
+                        },
+                        {   $unwind: "$class_code" },
+                        {
+                            $lookup:{ from: 'gradelevels', localField: 'section', foreignField: '_id', as: 'section' }
+                        },
+                        {   $unwind: "$section" },
+                        {
+                            $addFields: {
+                                class_section: {
+                                    $concat: ["$class_code.code", ' - ',"$section.grade_level", ' - ',"$section.section"],
+                                }
+                            },
+                        },
+                        {
+                            $match: { 
+                                instructor: prof._id
+                            }
+                        },
+                        
+                    ]).exec(async(error,classes)=>{
+                        if(error) return res.status(500).json({response:true, message:error.message})
+                        return res.status(200).json({response:true, data:classes})
+                    })
+                }else{
+                    return res.status(403).json({response:true, message:'Not allowed!'})
+                }
+            })
+        } catch (error) {
+            return res.status(500).json({response:true, message:error.message})
+        }
     }
 }
+ 

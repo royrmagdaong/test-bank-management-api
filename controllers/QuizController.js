@@ -157,7 +157,7 @@ module.exports = {
             return res.status(500).json({response:false, message:error.message})
         }
     },
-    assignClass: async (req, res) => {
+    assignQuizToClass: async (req, res) => {
         try {
             let class_id = req.body.class_id
             let quiz_id = req.body.quiz_id

@@ -41,4 +41,18 @@ router.post('/count',
     ActivityController.getActivityCount
 )
 
+// get activitiy count by prof
+router.post('/assign-activity', 
+    authenticate, 
+    authRole(['professor']), 
+    ActivityController.assignActivityToClass
+)
+
+// get activitiy count by prof
+router.post('/class-prof-activity', 
+    authenticate, 
+    authRole(['professor']), 
+    ActivityController.getClassByProfActivity
+)
+
 module.exports = router

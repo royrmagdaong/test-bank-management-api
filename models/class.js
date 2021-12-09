@@ -34,6 +34,10 @@ const classSchema = Schema({
         type: Schema.Types.ObjectId, 
         ref: 'Quiz'
     }],
+    activity:[{
+        type: Schema.Types.ObjectId, 
+        ref: 'Activity'
+    }],
     created_at:{
         type: Date,
         required: true,

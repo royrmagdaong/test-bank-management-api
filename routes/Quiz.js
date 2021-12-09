@@ -41,19 +41,19 @@ router.post('/count',
     QuizController.getQuizCount
 )
 // assign class
-router.post('/assign-class', 
+router.post('/assign-quiz', 
     authenticate, 
     authRole(['professor']), 
-    QuizController.assignClass
+    QuizController.assignQuizToClass
 )
 // get all class assign to quiz
-router.post('/assigned-class', 
+router.post('/assigned-quiz', 
     authenticate, 
     authRole(['professor']), 
     QuizController.getAllClass
 )
 // unassign class
-router.post('/unassign-class', 
+router.post('/unassign-quiz', 
     authenticate, 
     authRole(['professor']), 
     QuizController.unAssignClass
