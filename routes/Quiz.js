@@ -52,5 +52,11 @@ router.post('/assigned-class',
     authRole(['professor']), 
     QuizController.getAllClass
 )
+// unassign class
+router.post('/unassign-class', 
+    authenticate, 
+    authRole(['professor']), 
+    QuizController.unAssignClass
+)
 
 module.exports = router

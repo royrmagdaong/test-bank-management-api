@@ -235,5 +235,28 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({response:false, message: error.message})
         }
+    },
+    unAssignClass: async (req, res) => {
+        try {
+            let quiz_id = req.body.quiz_id
+            let class_id = req.body.class_id
+            await Class.findOne({_id:class_id}).exec(async (error, _class)=>{
+                if(error) return res.status(500).json({response:false, message:error.message})
+                if(_class){
+                    const index = _class.quiz.indexOf(quiz_id)
+                    if(index > -1){
+                        _class.quiz.splice(index, 1)
+                    }
+                    _class.save(async (error)=>{
+                        if(error) return res.status(500).json({response:false, message:error.message})
+                        return res.status(200).json({response: true, data: _class, message: 'Quiz successfully unassigned to this class.'})
+                    })
+                }else{
+                    return res.status(500).json({response:false, message: 'Class not found!'})
+                }
+            })
+        } catch (error) {
+            return res.status(500).json({response:false, message:error.message})
+        }
     }
 }
