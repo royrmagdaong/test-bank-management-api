@@ -41,4 +41,31 @@ router.post('/count',
     ExamController.getExamCount
 )
 
+// get exam count by prof
+router.post('/assign-exam', 
+    authenticate, 
+    authRole(['professor']), 
+    ExamController.assignExamToClass
+)
+
+// get exam count by prof
+router.post('/class-prof-exam', 
+    authenticate, 
+    authRole(['professor']), 
+    ExamController.getClassByProfExam
+)
+
+// get all class by exam
+router.post('/class-by-exam', 
+    authenticate, 
+    authRole(['professor']), 
+    ExamController.getAllClassByExam
+)
+
+// get all class by exam
+router.post('/unassign-exam-to-class', 
+    authenticate, 
+    authRole(['professor']), 
+    ExamController.unAssignExamToClass
+)
 module.exports = router

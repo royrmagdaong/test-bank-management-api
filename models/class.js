@@ -38,6 +38,10 @@ const classSchema = Schema({
         type: Schema.Types.ObjectId, 
         ref: 'Activity'
     }],
+    exam:[{
+        type: Schema.Types.ObjectId, 
+        ref: 'Exam'
+    }],
     created_at:{
         type: Date,
         required: true,

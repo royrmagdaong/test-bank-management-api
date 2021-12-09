@@ -229,15 +229,15 @@ module.exports = {
                         },
                         
                     ]).exec(async(error,classes)=>{
-                        if(error) return res.status(500).json({response:true, message:error.message})
+                        if(error) return res.status(500).json({response:false, message:error.message})
                         return res.status(200).json({response:true, data:classes})
                     })
                 }else{
-                    return res.status(403).json({response:true, message:'Not allowed!'})
+                    return res.status(403).json({response:false, message:'Not allowed!'})
                 }
             })
         } catch (error) {
-            return res.status(500).json({response:true, message:error.message})
+            return res.status(500).json({response:false, message:error.message})
         }
     },
     getAllClassByActivity: async (req,res) => {
