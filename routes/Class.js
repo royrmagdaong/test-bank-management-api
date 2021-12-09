@@ -46,11 +46,4 @@ router.post('/prof-subjects',
     ClassController.getProfessorSubjects
 )
 
-// get class by prof
-router.post('/prof-class', 
-    authenticate, 
-    authRole(['professor']), 
-    ClassController.getClassByProf
-)
-
 module.exports = router

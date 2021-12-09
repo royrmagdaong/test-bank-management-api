@@ -58,5 +58,11 @@ router.post('/unassign-quiz',
     authRole(['professor']), 
     QuizController.unAssignClass
 )
+// get class by prof quuiz
+router.post('/class-prof-exam', 
+    authenticate, 
+    authRole(['professor']), 
+    QuizController.getClassByProfQuiz
+)
 
 module.exports = router
