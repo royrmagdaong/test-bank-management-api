@@ -1,3 +1,5 @@
+const mongoose = require('mongoose')
+const ObjectId = mongoose.Types.ObjectId;
 const Class = require('../models/class')
 const Professor = require('../models/professor')
 
@@ -213,10 +215,22 @@ module.exports = {
     getClassByProf: async(req, res) => {
         try {
             let user_id = res.user.id
+            let quiz_id = req.body.quiz_id
             await Professor.findOne({user_id:user_id}).exec(async (error,prof)=>{
                 if(error) return res.status(500).json({response:true, message:error.message})
                 if(prof){
                     await Class.aggregate([
+                        {
+                            $project:{
+                                quiz: 1,
+                                class_code: 1,
+                                instructor: 1,
+                                section: 1,
+                                disable:{
+                                    $in:[ObjectId(quiz_id), "$quiz"]
+                                }
+                            }
+                        },
                         {
                             $lookup:{ from: 'subjects', localField: 'class_code', foreignField: '_id', as: 'class_code' }
                         },
@@ -233,8 +247,11 @@ module.exports = {
                             },
                         },
                         {
-                            $match: { instructor: prof._id }
+                            $match: { 
+                                instructor: prof._id
+                            }
                         },
+                        
                     ]).exec(async(error,classes)=>{
                         if(error) return res.status(500).json({response:true, message:error.message})
                         return res.status(200).json({response:true, data:classes})

@@ -1,5 +1,8 @@
+const mongoose = require('mongoose')
 const Quiz = require('../models/quiz')
 const Professor = require('../models/professor')
+const Class = require('../models/class')
+const ObjectId = mongoose.Types.ObjectId;
 
 module.exports = {
     getQuizCount: async (req, res) =>{
@@ -163,16 +166,16 @@ module.exports = {
             await Professor.findOne({user_id:user_id}).exec(async (error, prof)=>{
                 if(error) return res.status(500).json({response:false, message:error.message})
                 if(prof){
-                    await Quiz.findOne({prof_id:prof._id, _id: quiz_id}).exec(async(error, quiz)=>{
+                    await Class.findOne({_id:class_id, instructor:prof._id}).exec(async(error, _class)=>{
                         if(error) return res.status(500).json({response:false, message:error.message})
-                        if(quiz){
-                            quiz.class.push(class_id)
-                            quiz.save(async(error)=>{
+                        if(_class){
+                            _class.quiz.push(quiz_id)
+                            _class.save(async(error)=>{
                                 if(error) return res.status(500).json({response:false, message:error.message})
-                                return res.status(200).json({response:true, message: 'Successfully assigned.'})
+                                return res.status(200).json({response:true, message: 'Quiz successfully added to class.'})
                             })
                         }else{
-                            return res.status(404).json({response:false, message:'Quiz not found!'})
+                            return res.status(404).json({response:false, message:'Class not found!'})
                         }
                     })
                 }else{
@@ -183,6 +186,54 @@ module.exports = {
             
         } catch (error) {
             return res.status(500).json({response:false, message:error.message})
+        }
+    },
+    getAllClass: async (req,res) => {
+        try {
+            let quiz_id = req.body.quiz_id
+
+            await Class.aggregate([
+                {
+                    $lookup:{ 
+                        from: 'subjects', 
+                        localField: 'class_code', 
+                        foreignField: '_id', 
+                        as: 'subject' 
+                    }
+                },
+                {   $unwind: "$subject" },
+                {
+                    $lookup:{ 
+                        from: 'gradelevels', 
+                        localField: 'section', 
+                        foreignField: '_id', 
+                        as: 'section' 
+                    }
+                },
+                {   $unwind: "$section" },
+                {
+                    $addFields: {
+                        class_section: {
+                            $concat: ["$subject.code", ' - ',"$section.grade_level", ' - ',"$section.section", ' (','$days_and_time',')'],
+                        }
+                    },
+                },
+                {
+                    $project:{
+                        class_section: 1,
+                        quiz: 1,
+                        instructor: 1
+                    }
+                },
+                {
+                    $match: { quiz: ObjectId(quiz_id)  }
+                }
+            ]).exec(async(error,quiz)=>{
+                if(error) return res.status(500).json({response:false, message: error.message})
+                return res.status(200).json({response:true, data: quiz})
+            })
+        } catch (error) {
+            return res.status(500).json({response:false, message: error.message})
         }
     }
 }
