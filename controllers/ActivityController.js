@@ -239,6 +239,54 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({response:true, message:error.message})
         }
-    }
+    },
+    getAllClassByActivity: async (req,res) => {
+        try {
+            let activity_id = req.body.activity_id
+
+            await Class.aggregate([
+                {
+                    $lookup:{ 
+                        from: 'subjects', 
+                        localField: 'class_code', 
+                        foreignField: '_id', 
+                        as: 'subject' 
+                    }
+                },
+                {   $unwind: "$subject" },
+                {
+                    $lookup:{ 
+                        from: 'gradelevels', 
+                        localField: 'section', 
+                        foreignField: '_id', 
+                        as: 'section' 
+                    }
+                },
+                {   $unwind: "$section" },
+                {
+                    $addFields: {
+                        class_section: {
+                            $concat: ["$subject.code", ' - ',"$section.grade_level", ' - ',"$section.section", ' (','$days_and_time',')'],
+                        }
+                    },
+                },
+                {
+                    $project:{
+                        class_section: 1,
+                        activity: 1,
+                        instructor: 1
+                    }
+                },
+                {
+                    $match: { activity: ObjectId(activity_id)  }
+                }
+            ]).exec(async(error,activity)=>{
+                if(error) return res.status(500).json({response:false, message: error.message})
+                return res.status(200).json({response:true, data: activity})
+            })
+        } catch (error) {
+            return res.status(500).json({response:false, message: error.message})
+        }
+    },
 }
  
