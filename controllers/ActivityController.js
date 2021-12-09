@@ -288,5 +288,28 @@ module.exports = {
             return res.status(500).json({response:false, message: error.message})
         }
     },
+    unAssignActivityToClass: async (req, res) => {
+        try {
+            let activity_id = req.body.activity_id
+            let class_id = req.body.class_id
+            await Class.findOne({_id:class_id}).exec(async (error, _class)=>{
+                if(error) return res.status(500).json({response:false, message:error.message})
+                if(_class){
+                    const index = _class.activity.indexOf(activity_id)
+                    if(index > -1){
+                        _class.activity.splice(index, 1)
+                    }
+                    _class.save(async (error)=>{
+                        if(error) return res.status(500).json({response:false, message:error.message})
+                        return res.status(200).json({response: true, data: _class, message: 'Activity successfully unassigned to this class.'})
+                    })
+                }else{
+                    return res.status(500).json({response:false, message: 'Class not found!'})
+                }
+            })
+        } catch (error) {
+            return res.status(500).json({response:false, message:error.message})
+        }
+    }
 }
  

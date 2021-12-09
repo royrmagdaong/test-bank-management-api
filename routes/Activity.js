@@ -62,4 +62,11 @@ router.post('/class-by-activity',
     ActivityController.getAllClassByActivity
 )
 
+// get all class by activitiy
+router.post('/unassign-activity-to-class', 
+    authenticate, 
+    authRole(['professor']), 
+    ActivityController.unAssignActivityToClass
+)
+
 module.exports = router
