@@ -46,6 +46,9 @@ seeder.connect(process.env.DATABASE_URL, { useUnifiedTopology: true, useNewUrlPa
                         './models/grade-level',
                         './models/room',
                         './models/class',
+                        './models/quiz',
+                        './models/activity',
+                        './models/exam',
                     ])
                 
                     // clear models
@@ -58,6 +61,9 @@ seeder.connect(process.env.DATABASE_URL, { useUnifiedTopology: true, useNewUrlPa
                         'GradeLevel',
                         'Room',
                         'Class',
+                        'Quiz',
+                        'Activity',
+                        'Exam',
                     ], async ()=> {
 
                         // create admin user
