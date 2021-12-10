@@ -8,6 +8,8 @@ const {Server} = require('socket.io')
 const mongoose = require('mongoose')
 const httpServer = createServer(app);
 const io = new Server(httpServer, { cors:{ origin: '*'} });
+const socketIo = require('./socket-io/index')
+
 
 app.use(express.json())
 app.use(cors());
@@ -52,5 +54,7 @@ app.use('/activity', ActivityRoutes)
 app.use('/quiz', QuizRoutes)
 app.use('/exam', ExamRoutes)
 
-
 httpServer.listen(process.env.PORT, () => console.log(`Server Started at port ${process.env.PORT}`))
+
+// init socket
+socketIo.initSocketIo(io)

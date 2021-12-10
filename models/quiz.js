@@ -14,6 +14,18 @@ const quizSchema = Schema({
         type: Object,
         of: String
     }],
+    is_done:{
+        type: Boolean,
+        default: false
+    },
+    start_time:{
+        type: Date,
+        default: null
+    },
+    time_duration:{
+        type: Date,
+        default: null
+    },
     created_at:{
         type: Date,
         required: true,
