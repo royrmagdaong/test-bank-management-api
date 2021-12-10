@@ -3,6 +3,7 @@ const authRole = require('../libs/authRole')
 let admin = 'admin'
 let student = 'student'
 let professor = 'professor'
+
 module.exports = (socket,io) => {
     socket.on("join-class", data => {
         authenticate(data.token).then((user) =>{

@@ -18,13 +18,13 @@ const quizSchema = Schema({
         type: Boolean,
         default: false
     },
-    start_time:{
-        type: Date,
-        default: null
+    in_progress:{
+        type: Boolean,
+        default: false
     },
     time_duration:{
-        type: Date,
-        default: null
+        type: Object,
+        of: String
     },
     created_at:{
         type: Date,

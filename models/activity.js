@@ -14,6 +14,18 @@ const activitySchema = Schema({
         type: Object,
         of: String
     }],
+    is_done:{
+        type: Boolean,
+        default: false
+    },
+    in_progress:{
+        type: Boolean,
+        default: false
+    },
+    time_duration:{
+        type: Object,
+        of: String
+    },
     created_at:{
         type: Date,
         required: true,

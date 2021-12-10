@@ -1,5 +1,6 @@
 const startExam = require('./events/startExam')
 const joinClass = require('./events/joinClass')
+
 module.exports = {
     initSocketIo: (io) => {
         io.on("connection", socket => {
