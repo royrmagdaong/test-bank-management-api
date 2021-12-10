@@ -310,6 +310,28 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({response:false, message:error.message})
         }
+    },
+    setExamDuration: async (req, res) => {
+        try {
+            let activity_id = req.body.activity_id
+            let time_duration = req.body.time_duration
+
+            await Activity.findOne({_id: activity_id}).exec(async(error, activity)=>{
+                if(error) return res.status(500).json({response: false, message: error.message})
+                if(activity){
+                    activity.time_duration = time_duration
+                    activity.in_progress = true
+                    activity.save(async(error)=>{
+                        if(error) return res.status(500).json({response: false, message: error.message})
+                        return res.status(200).json({response:true, message: 'Activity duration successfully set!'})
+                    })
+                }else{
+                    return res.status(500).json({response: false, message: 'Activity not found!'})
+                }
+            })
+        } catch (error) {
+            return res.status(500).json({response: false, message: error.message})
+        }
     }
 }
  

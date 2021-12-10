@@ -69,4 +69,11 @@ router.post('/unassign-activity-to-class',
     ActivityController.unAssignActivityToClass
 )
 
+// set exam duration
+router.post('/set-exam-duration', 
+    authenticate, 
+    authRole(['professor']), 
+    ActivityController.setExamDuration
+)
+
 module.exports = router
