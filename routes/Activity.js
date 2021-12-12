@@ -76,4 +76,11 @@ router.post('/set-exam-duration',
     ActivityController.setExamDuration
 )
 
+// get student activities
+router.post('/student-activities', 
+    authenticate, 
+    authRole(['student']), 
+    ActivityController.getStudentActivities
+)
+
 module.exports = router

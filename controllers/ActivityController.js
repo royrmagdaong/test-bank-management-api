@@ -3,6 +3,7 @@ const ObjectId = mongoose.Types.ObjectId;
 const Activity = require('../models/activity')
 const Professor = require('../models/professor')
 const Class = require('../models/class')
+const Student = require('../models/student')
 
 module.exports = {
     getActivityCount: async (req, res) =>{
@@ -331,6 +332,38 @@ module.exports = {
             })
         } catch (error) {
             return res.status(500).json({response: false, message: error.message})
+        }
+    },
+    getStudentActivities: async (req, res) =>{
+        try {
+            let user_id = res.user.id
+            await Student.findOne({user_id: user_id}).exec(async (error, student) =>{
+                if(error)return res.status(500).json({response: false, message:error.message})
+                if(student){
+                    await Class.find({students:student._id})
+                    .populate(['activity'])
+                    .exec(async(error,classes)=>{
+                        if(error) return res.status(500).json({response: false, message:error.message})
+                        if(classes){
+                            let student_activities = []
+                            classes.forEach(item=>{
+                                if(item.activity.length>0){
+                                    item.activity.forEach(act=>{
+                                        student_activities.push(act)
+                                    })
+                                }
+                            })
+                            return res.status(200).json({response:true, data: student_activities})
+                        }else{
+                            if(error) return res.status(500).json({response: false, message:'Class not found.'})
+                        }
+                    })
+                }else{
+                    return res.status(500).json({response: false, message:'Student not found.'})
+                }
+            })
+        } catch (error) {
+            return res.status(500).json({response: false, message:error.message})
         }
     }
 }
