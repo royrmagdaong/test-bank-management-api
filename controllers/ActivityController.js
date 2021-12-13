@@ -370,21 +370,22 @@ module.exports = {
                 if(error)return res.status(500).json({response: false, message:error.message})
                 if(student){
                     await Class.find({students:student._id})
-                    .populate(['activity'])
                     .exec(async(error,classes)=>{
                         if(error) return res.status(500).json({response: false, message:error.message})
                         if(classes){
                             let student_activities = []
                             classes.forEach(item=>{
                                 if(item.activity.length>0){
-                                    item.activity.forEach(act=>{
-                                        if(act.in_progress || act.is_done){
-                                            student_activities.push(act)
-                                        }
-                                    })
+                                    student_activities.push(item.activity)
                                 }
                             })
-                            return res.status(200).json({response:true, data: student_activities})
+                            await Activity.find({_id:{$in: student_activities}})
+                            .populate(['subj_id'])
+                            .exec(async (error, activity)=>{
+                                if(error) return res.status(500).json({response: false, message:error.message})
+                                return res.status(200).json({response:true, data: activity})
+                            })
+                            
                         }else{
                             if(error) return res.status(500).json({response: false, message:'Class not found.'})
                         }
@@ -395,6 +396,23 @@ module.exports = {
             })
         } catch (error) {
             return res.status(500).json({response: false, message:error.message})
+        }
+    },
+    getActivity: async (req, res) => {
+        try {
+            let activity_id = req.body.activity_id
+            await Activity.findOne({_id:activity_id})
+            .populate(['subj_id'])
+            .exec(async (error, activity) => {
+                if(error) return res.status(500).json({response:false, message:error.message})
+                if(activity){
+                    return res.status(200).json({response: true, data: activity})
+                }else{
+                    return res.status(200).json({response: true, data: [], message:'activity not found!'})
+                }
+            })
+        } catch (error) {
+            return res.status(500).json({response:false, message:error.message})
         }
     }
 }

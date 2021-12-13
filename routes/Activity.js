@@ -83,4 +83,11 @@ router.post('/student-activities',
     ActivityController.getStudentActivities
 )
 
+// get student activity
+router.post('/student-activity', 
+    authenticate, 
+    authRole(['student']), 
+    ActivityController.getActivity
+)
+
 module.exports = router
