@@ -349,7 +349,9 @@ module.exports = {
                             classes.forEach(item=>{
                                 if(item.activity.length>0){
                                     item.activity.forEach(act=>{
-                                        student_activities.push(act)
+                                        if(act.in_progress || act.is_done){
+                                            student_activities.push(act)
+                                        }
                                     })
                                 }
                             })
