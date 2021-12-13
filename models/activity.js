@@ -6,6 +6,10 @@ const activitySchema = Schema({
         type: Schema.Types.ObjectId, 
         ref: 'Professor'
     },
+    subj_id: {
+        type: Schema.Types.ObjectId, 
+        ref: 'Subject'
+    },
     activityName:{
         type: String,
         required: true

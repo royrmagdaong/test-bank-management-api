@@ -212,4 +212,50 @@ module.exports = {
             return res.status(500).json({response: true, message: error.message})
         }
     },
+    getProfessorClassAndSubjects: async (req, res)=>{
+        try {
+            let user_id = res.user.id
+            await Professor.findOne({user_id:user_id}).exec(async (error, prof) => {
+                if(error) return res.status(500).json({response: true, message: error.message})
+                if(prof){
+                    await Class.aggregate([
+                        {
+                            $lookup:{ 
+                                from: 'subjects', 
+                                localField: 'class_code', 
+                                foreignField: '_id', 
+                                as: 'subject' 
+                            }
+                        },
+                        {   $unwind: "$subject" },
+                        {
+                            $addFields: {
+                                class_section: {
+                                    $concat: ["$subject.code", ' - ', "$subject.description"]
+                                }
+                            },
+                        },
+                        {
+                            $project:{
+                                subject:1,
+                                class_section: 1,
+                                subj_id: 1,
+                                instructor: 1
+                            }
+                        },
+                        {
+                            $match: { instructor: ObjectId(prof._id)  }
+                        }
+                    ]).exec(async(error,subjects)=>{
+                        if(error) return res.status(500).json({response: true, message: error.message})
+                        return res.status(200).json({response: true, data: subjects})
+                    })
+                }else{
+                    return res.status(500).json({response: true, message: 'Not Allowed!'})
+                }
+            })
+        } catch (error) {
+            return res.status(500).json({response: true, message: error.message})
+        }
+    }
 }

@@ -4,6 +4,7 @@ const Activity = require('../models/activity')
 const Professor = require('../models/professor')
 const Class = require('../models/class')
 const Student = require('../models/student')
+const Subject = require('../models/subject')
 
 module.exports = {
     getActivityCount: async (req, res) =>{
@@ -33,6 +34,7 @@ module.exports = {
             let user_id = res.user.id
             let activityName = req.body.activityName
             let questions = req.body.questions
+            let subj_id = req.body.subj_id
 
             await Professor.findOne({user_id:user_id}).exec(async (error, professor)=>{
                 if(error) return res.status(500).json({response:false, message: error.message})
@@ -40,7 +42,8 @@ module.exports = {
                     await new Activity({
                         prof_id: professor._id,
                         activityName: activityName,
-                        questions: questions
+                        questions: questions,
+                        subj_id: subj_id
                     }).save(async (error,newActivity)=>{
                         if(error) return res.status(500).json({response:false, message: error.message})
                         if(newActivity){
@@ -63,7 +66,33 @@ module.exports = {
             await Professor.findOne({user_id: user_id}).exec(async (error, professor)=>{
                 if(error) return res.status(500).json({response:false, message: error.message})
                 if(professor){
-                    await Activity.find({prof_id:professor._id,deleted_at:null}).exec(async (error,activities)=>{
+                    await Activity.aggregate([
+                        {
+                            $lookup:{ 
+                                from: 'subjects', 
+                                localField: 'subj_id', 
+                                foreignField: '_id', 
+                                as: 'subject' 
+                            }
+                        },
+                        {   $unwind: "$subject" },
+                        {
+                            $addFields: {
+                                subject_name: {
+                                    $concat: ["$subject.code", ' - ', "$subject.description"]
+                                }
+                            },
+                        },
+                        {
+                            $match: {  
+                                $and:[
+                                    {prof_id: ObjectId(professor._id)},
+                                    {deleted_at:null},
+                                ]
+                            }
+                        }
+                    ])
+                    .exec(async (error,activities)=>{
                         if(error) return res.status(500).json({response:false, message: error.message})
                         return res.status(200).json({response:true, data: activities})
                     })

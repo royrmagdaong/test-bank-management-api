@@ -6,6 +6,10 @@ const examSchema = Schema({
         type: Schema.Types.ObjectId, 
         ref: 'Professor'
     },
+    subj_id: {
+        type: Schema.Types.ObjectId, 
+        ref: 'Subject'
+    },
     examName:{
         type: String,
         required: true
