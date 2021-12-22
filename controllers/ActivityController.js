@@ -223,10 +223,24 @@ module.exports = {
             let user_id = res.user.id
             let activity_id = req.body.activity_id
             await Professor.findOne({user_id:user_id}).exec(async (error,prof)=>{
-                if(error) return res.status(500).json({response:true, message:error.message})
+                if(error) return res.status(500).json({response:false, message:error.message})
                 if(prof){
                     await Class.aggregate([
                         {
+                            $addFields: {
+                                activity: {
+                                    "$cond": {
+                                        "if": {
+                                            "$ne": [ { "$type": "$activity" }, "array" ]
+                                        },
+                                        "then": [],
+                                        "else": "$activity"
+                                    }
+                                }
+                            },
+                        },
+                        {
+                            
                             $project:{
                                 activity: 1,
                                 class_code: 1,
